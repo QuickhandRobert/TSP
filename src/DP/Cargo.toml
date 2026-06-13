@@ -1,0 +1,9 @@
+[package]
+name = "DP"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+gen-combinations = "0.1.0"
+indicatif = "0.18.4"
+serde_json = "1.0.150"
