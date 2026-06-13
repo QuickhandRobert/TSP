@@ -112,7 +112,7 @@ fn main() {
     const OUT_PATH: &str = "points.json";
     let mut points: Vec<(u32, u32)> = Vec::new();
     let mut rng = rand::rng();
-    const N: u32 = 23;
+    const N: u32 = 400;
     const GRID_SIZE: u32 = N * 4;
     for _ in 0..N {
         let mut point: (u32, u32);
