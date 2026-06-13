@@ -1,3 +1,4 @@
+use indicatif::{ProgressBar, ProgressStyle};
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::BufReader;
@@ -5,6 +6,8 @@ fn farthest_insertion(adj_mat: &Vec<Vec<f64>>) -> (f64, Vec<u32>) {
     let n = adj_mat.len();
     let mut curr = 0;
     let mut v: Vec<usize> = Vec::new();
+    let bar = ProgressBar::new(n as u64);
+    bar.set_style(ProgressStyle::with_template("{percent}% [{elapsed_precise}]").unwrap());
     v.resize_with(n - 1, || {
         curr += 1;
         curr
@@ -13,7 +16,9 @@ fn farthest_insertion(adj_mat: &Vec<Vec<f64>>) -> (f64, Vec<u32>) {
     parents.resize(n, 0);
     let mut t: Vec<usize> = Vec::new();
     t.push(0);
+    let mut finish: usize = 0;
     while !v.is_empty() {
+        bar.inc(1);
         let mut min: f64 = f64::INFINITY;
         let mut k = 0;
         let mut i_fin: usize = 0;
@@ -37,11 +42,13 @@ fn farthest_insertion(adj_mat: &Vec<Vec<f64>>) -> (f64, Vec<u32>) {
         t.push(k);
         if j_fin != 0 {
             parents[j_fin] = k;
+        } else {
+            finish = k;
         }
         parents[k] = i_fin;
     }
     let mut path: Vec<u32> = Vec::new();
-    let mut i = 1;
+    let mut i = finish;
     let mut cost: f64 = 0f64;
     loop {
         path.push(i as u32);
@@ -51,6 +58,7 @@ fn farthest_insertion(adj_mat: &Vec<Vec<f64>>) -> (f64, Vec<u32>) {
         cost += adj_mat[i][parents[i]];
         i = parents[i];
     }
+    bar.finish();
     (cost, path)
 }
 fn main() {
@@ -69,6 +77,7 @@ fn main() {
     println!("Json Loaded Succesfully!");
     println!("Running the Farthest-Insertion algotirhm...");
     let (cost, path) = farthest_insertion(adj_mat);
+    println!("{n}", n = path.len());
     println!("Route Found!\nCost: {cost}\nPath: {path:?}");
     println!(
         "[Benchmark]\nRatio to Lower Bound: {ratio}",
